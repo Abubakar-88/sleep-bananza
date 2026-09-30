@@ -9,6 +9,7 @@ import { Checkout } from "../pages/Checkout";
 import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
 import { Register } from "../pages/Register";
+import { OrderConfirmation } from "../pages/OrderConfirmation";
 
 export function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ export function AppRoutes() {
         <Route path="cart" element={<Cart />} />
         <Route path="register" element={<Register />} />
         <Route path="checkout" element={<Checkout />} />
+        <Route path="order-confirmation" element={<OrderConfirmation />} />
         <Route path="account" element={<Account />} />
         <Route path="*" element={<NotFound />} />
       </Route>

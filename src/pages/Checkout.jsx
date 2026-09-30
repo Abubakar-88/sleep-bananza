@@ -144,7 +144,7 @@ export function Checkout() {
         shipping_address,
       });
       await refreshCart();
-      navigate("/", { state: { orderId: order.order_id } });
+      navigate("/order-confirmation", { state: { order } });
     } catch (err) {
       setError(err?.response?.data?.message || "Checkout failed. Please check your details and try again.");
     } finally {
