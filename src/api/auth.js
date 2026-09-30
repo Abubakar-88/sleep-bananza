@@ -3,7 +3,9 @@ import axios from "axios";
 // Customer login/register runs against a dedicated auth endpoint (JWT plugin),
 // separate from storeApi/wpApi since it needs its own base path (/wp-json/jwt-auth/v1
 // or /wp-json/simple-jwt-login/v1 depending on which plugin the backend uses).
-const WP_API_URL = import.meta.env.VITE_WP_API_URL;
+// Trailing slash on VITE_WP_API_URL is stripped defensively — otherwise it
+// produces a double slash (".../ /wp-json/...") that WordPress 404s on.
+const WP_API_URL = (import.meta.env.VITE_WP_API_URL || "").replace(/\/+$/, "");
 
 const authApi = axios.create({
   baseURL: `${WP_API_URL}/wp-json/jwt-auth/v1`,

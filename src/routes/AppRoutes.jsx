@@ -8,6 +8,7 @@ import { Cart } from "../pages/Cart";
 import { Checkout } from "../pages/Checkout";
 import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
+import { Register } from "../pages/Register";
 
 export function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ export function AppRoutes() {
         <Route path="collection/:slug" element={<Collection />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="cart" element={<Cart />} />
+        <Route path="register" element={<Register />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="account" element={<Account />} />
         <Route path="*" element={<NotFound />} />

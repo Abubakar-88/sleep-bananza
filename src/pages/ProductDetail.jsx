@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { getProductById } from "../api/products";
 import { useCart } from "../hooks/useCart";
 import { formatPriceFromProduct } from "../utils/formatPrice";
@@ -8,6 +9,7 @@ import { Button } from "../components/common/Button";
 import { Loader } from "../components/common/Loader";
 import { RelatedProducts } from "../components/product/RelatedProducts";
 import { ReviewsSection } from "../components/product/ReviewsSection";
+import { pageFade, fadeUp, crossFade } from "../utils/motion";
 
 /* ---------- helpers ---------- */
 
@@ -60,29 +62,38 @@ function Gallery({ images, name }) {
 
   return (
     <div>
-      <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden">
-        {current && (
-          <img
-            src={current.src}
-            alt={current.alt || name}
-            className="w-full h-full object-cover"
-          />
-        )}
+      <div className="aspect-square bg-slate-100 rounded-lg overflow-hidden relative">
+        <AnimatePresence mode="wait">
+          {current && (
+            <motion.img
+              key={current.src}
+              src={current.src}
+              alt={current.alt || name}
+              variants={crossFade}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+        </AnimatePresence>
       </div>
       {list.length > 1 && (
         <div className="grid grid-cols-4 gap-2 mt-2">
           {list.slice(0, 8).map((img, i) => (
-            <button
+            <motion.button
               key={img.id ?? i}
               type="button"
               onClick={() => setActive(i)}
               aria-label={`Show image ${i + 1}`}
-              className={`aspect-square rounded-md overflow-hidden bg-slate-100 border-2 ${
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className={`aspect-square rounded-md overflow-hidden bg-slate-100 border-2 transition-colors ${
                 i === active ? "border-slate-900" : "border-transparent"
               }`}
             >
               <img src={img.thumbnail || img.src} alt="" className="w-full h-full object-cover" />
-            </button>
+            </motion.button>
           ))}
         </div>
       )}
@@ -110,14 +121,16 @@ function OptionPicker({ attr, selected, onSelect, isOptionAvailable }) {
 
           if (asSwatch && color) {
             return (
-              <button
+              <motion.button
                 key={term.id}
                 type="button"
                 title={term.name}
                 aria-label={term.name}
                 aria-pressed={on}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={() => onSelect(attr.name, term.slug)}
-                className={`w-8 h-8 rounded-full border border-slate-300 outline-offset-2 ${
+                className={`w-8 h-8 rounded-full border border-slate-300 outline-offset-2 transition-shadow ${
                   on ? "outline outline-2 outline-slate-900" : ""
                 } ${available ? "" : "opacity-40"}`}
                 style={{ backgroundColor: color }}
@@ -126,19 +139,21 @@ function OptionPicker({ attr, selected, onSelect, isOptionAvailable }) {
           }
 
           return (
-            <button
+            <motion.button
               key={term.id}
               type="button"
               aria-pressed={on}
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => onSelect(attr.name, term.slug)}
-              className={`px-4 py-2 text-sm rounded-md border ${
+              className={`px-4 py-2 text-sm rounded-md border transition-colors ${
                 on
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-300 text-slate-700 hover:border-slate-500"
               } ${available ? "" : "opacity-40 line-through"}`}
             >
               {term.name}
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -157,8 +172,19 @@ function QuantityStepper({ value, onChange }) {
       >
         −
       </button>
-      <span className="w-8 text-center text-sm" aria-live="polite">
-        {value}
+      <span className="w-8 text-center text-sm overflow-hidden relative" aria-live="polite">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={value}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
+            className="block"
+          >
+            {value}
+          </motion.span>
+        </AnimatePresence>
       </span>
       <button
         type="button"
@@ -185,11 +211,28 @@ function Accordion({ items }) {
             className="w-full flex justify-between items-center py-3 text-sm font-medium text-slate-900"
           >
             {item.title}
-            <span aria-hidden="true" className="text-slate-500">
-              {open === i ? "−" : "+"}
-            </span>
+            <motion.span
+              aria-hidden="true"
+              className="text-slate-500"
+              animate={{ rotate: open === i ? 45 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              +
+            </motion.span>
           </button>
-          {open === i && <div className="pb-4 text-sm text-slate-600">{item.content}</div>}
+          <AnimatePresence initial={false}>
+            {open === i && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="pb-4 text-sm text-slate-600">{item.content}</div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ))}
     </div>
@@ -360,11 +403,13 @@ export function ProductDetail() {
   ];
 
   return (
-    <>
+    <motion.div variants={pageFade} initial="initial" animate="animate" exit="exit">
       <div className="grid md:grid-cols-2 gap-10">
-        <Gallery images={product.images} name={name} />
+        <motion.div variants={fadeUp} initial="initial" animate="animate">
+          <Gallery images={product.images} name={name} />
+        </motion.div>
 
-        <div>
+        <motion.div variants={fadeUp} initial="initial" animate="animate">
           {product.categories?.[0] && (
             <p className="text-xs text-slate-500 mb-1">{decodeHtml(product.categories[0].name)}</p>
           )}
@@ -408,16 +453,37 @@ export function ProductDetail() {
 
             <div className="flex items-stretch gap-3 mb-2">
               <QuantityStepper value={quantity} onChange={setQuantity} />
-              <Button onClick={handleAddToCart} disabled={adding || !inStock} className="flex-1">
-                {buttonLabel}
-              </Button>
+              <motion.div whileTap={{ scale: 0.97 }} className="flex-1">
+                <Button onClick={handleAddToCart} disabled={adding || !inStock} className="w-full">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={buttonLabel}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.3 }}
+                      className="inline-block"
+                    >
+                      {buttonLabel}
+                    </motion.span>
+                  </AnimatePresence>
+                </Button>
+              </motion.div>
             </div>
 
-            {error && (
-              <p role="alert" className="text-sm text-red-600 mb-2">
-                {error}
-              </p>
-            )}
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  role="alert"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="text-sm text-red-600 mb-2"
+                >
+                  {error}
+                </motion.p>
+              )}
+            </AnimatePresence>
 
             <p className={`text-sm mb-6 ${inStock ? "text-emerald-700" : "text-red-600"}`}>
               {!inStock
@@ -430,7 +496,7 @@ export function ProductDetail() {
 
           <TrustList />
           <Accordion items={accordionItems} />
-        </div>
+        </motion.div>
       </div>
 
       <ReviewsSection productId={product.id} />
@@ -438,17 +504,25 @@ export function ProductDetail() {
       <RelatedProducts product={product} />
 
       {/* Mobile sticky add to cart */}
-      {showSticky && inStock && (
-        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-slate-200 px-4 py-3 flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-slate-900 truncate">{name}</p>
-            <p className="text-xs text-slate-500">{formatPriceFromProduct(product)}</p>
-          </div>
-          <Button onClick={handleAddToCart} disabled={adding}>
-            {missing ? `Select ${missing.name.toLowerCase()}` : buttonLabel}
-          </Button>
-        </div>
-      )}
-    </>
+      <AnimatePresence>
+        {showSticky && inStock && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-slate-200 px-4 py-3 flex items-center gap-3"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-slate-900 truncate">{name}</p>
+              <p className="text-xs text-slate-500">{formatPriceFromProduct(product)}</p>
+            </div>
+            <Button onClick={handleAddToCart} disabled={adding}>
+              {missing ? `Select ${missing.name.toLowerCase()}` : buttonLabel}
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
