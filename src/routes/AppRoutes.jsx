@@ -10,7 +10,7 @@ import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
 import { Register } from "../pages/Register";
 import { OrderConfirmation } from "../pages/OrderConfirmation";
-
+import { Personalize } from "../pages/Personalize";
 export function AppRoutes() {
   return (
     <Routes>
@@ -19,6 +19,8 @@ export function AppRoutes() {
         <Route path="shop" element={<Shop />} />
         <Route path="collection/:slug" element={<Collection />} />
         <Route path="product/:id" element={<ProductDetail />} />
+        <Route path="/collection/:slug" element={<Collection />} />
+       <Route path="/personalize" element={<Personalize />} />
         <Route path="cart" element={<Cart />} />
         <Route path="register" element={<Register />} />
         <Route path="checkout" element={<Checkout />} />
