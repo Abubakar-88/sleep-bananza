@@ -13,12 +13,26 @@ export const homeContent = {
     ctaLabel: "Shop Collection",
     ctaTo: "/shop",
     image: "", // e.g. "https://your-cdn.com/hero.jpg" (wide lifestyle photo, 2400px+)
+    // WP Admin → Home Page → Hero → "Hero effect": clouds_water | clouds | classic
+    effect: "clouds_water",
   },
 
   productTabs: {
     eyebrow: "Made for rest",
     title: "The easier way to",
     titleEmphasis: "sleep well",
+  },
+
+  // WP Admin → Home Page → "Sleep steps" (scroll story). Empty photos use store product photos.
+  sleepSteps: {
+    eyebrow: "Better sleep in 4 steps",
+    title: "Your new night routine",
+    steps: [
+      { title: "Dim the lights", text: "An hour before bed, switch to warm, low light so your body knows the day is ending.", image: null },
+      { title: "Quiet the room", text: "Soft, steady sound covers the sudden noises that pull you out of deep sleep.", image: null },
+      { title: "Get comfortable", text: "Breathable bedding and gentle weight help your body settle and stay asleep.", image: null },
+      { title: "Wake up gently", text: "Let light, not an alarm blast, bring you back in the morning.", image: null },
+    ],
   },
 
   bestsellers: {

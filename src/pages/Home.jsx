@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { useHomeData } from "../hooks/useHomeData";
 import { HomeHero } from "../components/home/HomeHero";
+import { CloudHero } from "../components/home/CloudHero";
+import { SleepSteps } from "../components/home/SleepSteps";
 import { ProductTabsSection } from "../components/home/ProductTabsSection";
 import { BestsellerCategories, BenefitTrio, ScienceCarousel } from "../components/home/CategorySections";
 import { ParallaxBanner, StatsSplit, UgcStrip } from "../components/home/BannerSections";
@@ -65,13 +67,20 @@ export function Home() {
 
   return (
     <FullWidth>
-      <HomeHero content={c.hero} image={big.hero} stats={stats} />
+      {/* WP Admin → Home Page → Hero → "Hero effect" */}
+      {c.hero.effect === "classic" ? (
+        <HomeHero content={c.hero} image={big.hero} stats={stats} />
+      ) : (
+        <CloudHero content={c.hero} image={big.hero} stats={stats} water={c.hero.effect !== "clouds"} />
+      )}
 
       <ProductTabsSection content={c.productTabs} categories={categories} featured={featured} />
 
       <BestsellerCategories content={c.bestsellers} categories={categories} fallbackImages={pool.main} />
 
       <QuoteStrip press={c.press} />
+
+      <SleepSteps content={c.sleepSteps} fallbackImages={pool.main} />
 
       <ParallaxBanner content={c.bannerOne} image={big.bannerOne} />
 

@@ -17,7 +17,7 @@ import { hasClass, isExternal, menuLink } from "../../utils/menuLink";
     - "Header Right Links (Headless frontend)"  e.g. Blog, Our Story
 */
 
-const SITE_NAME = "Sleep Banaza";
+const SITE_NAME = "Sleep Bonanza";
 const LOGO_SRC = ""; // optional: "/logo.svg" — leave empty to show SITE_NAME as text
 
 export function Header() {

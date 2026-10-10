@@ -48,7 +48,7 @@ export function Personalize() {
         <LookPair looks={c.looks} className="py-8" />
         <HowToSteps {...c.howTo} />
       </Wide>
-      {/* <StyleRows {...c.styles} /> */}
+      <StyleRows {...c.styles} /> 
       <Wide>
         <FaqList {...c.faq} />
       </Wide>
