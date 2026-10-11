@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useHomeData } from "../hooks/useHomeData";
 import { HomeHero } from "../components/home/HomeHero";
 import { CloudHero } from "../components/home/CloudHero";
+import { markPageReady } from "../components/layout/RouteCurtain";
 import { SleepSteps } from "../components/home/SleepSteps";
 import { ProductTabsSection } from "../components/home/ProductTabsSection";
 import { BestsellerCategories, BenefitTrio, ScienceCarousel } from "../components/home/CategorySections";
@@ -24,6 +25,11 @@ export function Home() {
       html.style.overflowX = prev;
     };
   }, []);
+
+  // tell the preloader the home page has its data (so "Sleep Banaza" finishes filling)
+  useEffect(() => {
+    if (!loading) markPageReady();
+  }, [loading]);
 
   // Pool of real product images used wherever a marketing image isn't set in homeContent
   const pool = useMemo(() => {
